@@ -1,41 +1,39 @@
-import { Document, Schema } from 'mongoose';
+import { Schema } from 'mongoose';
 
 /**
  * Extends Document by adding audit properties
  * @interface
  * @extends {Document}
  */
-interface AuditableDocument extends Document {
+interface IAuditableDocument {
   /**
    * The creation date.
    * @type {date} 
    * @memberof AuditableDocument
    */
   createdAt: Date;
+
   /**
-   * The last updated date.
+   * The creation date.
    * @type {date} 
    * @memberof AuditableDocument
   */
   updatedAt: Date;
+
   /**
-  * The current version.
-  * @type {number} 
-  * @memberof AuditableDocument
-  */
-  version: number;
+   * Is record deleted.
+   * @type {boolean} 
+   * @memberof AuditableDocument
+   */
+  isDeleted: boolean;
 }
 
 const AuditableSchema = new Schema(
   {
-    createdAt: { type: Date, default: Date.now },
-    updatedAt: { type: Date, default: Date.now },
-    version: { type: Number, default: 1 }
+    isDeleted: { type: Boolean, default: false }
   },
-  {
-    versionKey: 'version'
-  }
+  { optimisticConcurrency: true, timestamps: true }
 );
 
-export { AuditableDocument, AuditableSchema };
+export { IAuditableDocument, AuditableSchema };
 
