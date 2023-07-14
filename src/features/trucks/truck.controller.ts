@@ -1,8 +1,8 @@
 import { NextFunction, Request, Response } from 'express';
 import { ServerError } from '../../shared/errors/server-error';
 import { TruckService } from './truck.service';
-import { CreateTruckRequest } from './requests/create-truck';
-import { UpdateTruckRequest } from './requests/update-truck';
+import { CreateTruckRequest } from './api/create-truck';
+import { UpdateTruckRequest } from './api/update-truck';
 
 /**
  * TruckController.
@@ -15,8 +15,11 @@ export class TruckController {
   }
 
   find = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-    // todo: search for Trucks
-    next(new ServerError("Endpoint not implemented."));
+    try {
+      throw new ServerError("Endpoint not implemented.");
+    } catch (error) {
+      next(error);
+    }
   };
 
   /**
@@ -63,7 +66,9 @@ export class TruckController {
 
   delete = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-      throw new ServerError("Not implemented.");
+      const version: number = Number.parseInt(req.params.version);
+      await this.truckService.delete(req.params.id, version);
+      res.status(204).json();
     } catch (error) {
       next(error);
     }

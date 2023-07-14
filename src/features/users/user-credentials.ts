@@ -1,12 +1,12 @@
 import { Schema, Document, model, Types } from 'mongoose';
-import { IAuditableDocument, AuditableSchema } from '../../shared/models/auditable-document';
+import { IAuditable, AuditableSchema } from '../../shared/models/auditable';
 import { IUserProfile } from './user-profile';
 /**
  * Represents a User entity.
  * @interface
- * @extends {IAuditableDocument}
+ * @extends {IAuditable}
  */
-interface IUserCredentials extends IAuditableDocument, Document {
+interface IUserCredentials extends IAuditable, Document {
   hashedPassword: string;
   salt: string;
   lockedAt: Date;

@@ -1,12 +1,12 @@
 import { Schema, Document, model, Types } from 'mongoose';
-import { IAuditableDocument, AuditableSchema } from '../../shared/models/auditable-document';
+import { IAuditable, AuditableSchema } from '../../shared/models/auditable';
 
 /**
  * Represents a Note entity.
  * @interface
- * @extends {IAuditableDocument}
+ * @extends {IAuditable}
  */
-interface Note extends IAuditableDocument, Document {
+interface Note extends IAuditable, Document {
   forUser: Types.ObjectId;
   message: string;
   title: string;

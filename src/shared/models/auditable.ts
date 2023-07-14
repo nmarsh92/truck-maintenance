@@ -1,29 +1,28 @@
 import { Schema } from 'mongoose';
 
 /**
- * Extends Document by adding audit properties
+ * Audit properties for an entity.
  * @interface
- * @extends {Document}
  */
-interface IAuditableDocument {
+interface IAuditable {
   /**
    * The creation date.
    * @type {date} 
-   * @memberof AuditableDocument
+   * @memberof IAuditable
    */
   createdAt: Date;
 
   /**
    * The creation date.
    * @type {date} 
-   * @memberof AuditableDocument
+   * @memberof IAuditable
   */
   updatedAt: Date;
 
   /**
    * Is record deleted.
    * @type {boolean} 
-   * @memberof AuditableDocument
+   * @memberof IAuditable
    */
   isDeleted: boolean;
 }
@@ -35,5 +34,5 @@ const AuditableSchema = new Schema(
   { optimisticConcurrency: true, timestamps: true }
 );
 
-export { IAuditableDocument, AuditableSchema };
+export { IAuditable, AuditableSchema };
 

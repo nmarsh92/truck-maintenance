@@ -1,36 +1,45 @@
 import { Schema, Types } from 'mongoose';
 
 /**
- * Extends Document by adding audit properties
+ * Required fields for a historic child.
  * @interface
- * @extends {Document}
  */
-interface IHistoryDocument<T> {
+interface IHistory<T> {
   /**
    * The ID of the parent document.
    * @type {date} 
-   * @memberof HistoryDocument
+   * @memberof IHistory
    */
   parent: Types.ObjectId | T
 
   /**
  * When the this revision expired.
  * @type {date} 
- * @memberof HistoryDocument
+ * @memberof IHistory
 */
   expiredAt: Date | number;
 
   /**
-* When the this revision expired.
-* @type {date} 
-* @memberof HistoryDocument
-*/
+  * When the this revision expired.
+  * @type {date} 
+  * @memberof IHistory
+  */
   createdAt: Date;
 
   /**
    * Version of the revision.
    */
   version: number;
+}
+
+/**
+ *  An entity with history.
+ */
+interface IHistoryParent<T> {
+  /**
+   * @memberof IHistoryParent
+   */
+  history: Array<T>
 }
 
 /**
@@ -42,7 +51,7 @@ class HistorySchemaFactory {
    * @param parentSchema - Name of the parent schema.
    * @returns {Schema} Schema
    */
-  static create(parentSchema: string): Schema {
+  static createChild(parentSchema: string): Schema {
     return new Schema(
       {
         parent: { type: Types.ObjectId, ref: parentSchema },
@@ -52,7 +61,13 @@ class HistorySchemaFactory {
       }
     );
   }
+
+  static createParent(childSchema: string): Schema {
+    return new Schema({
+      history: [{ type: Schema.Types.ObjectId, ref: childSchema }]
+    })
+  }
 }
 
-export { IHistoryDocument, HistorySchemaFactory };
+export { IHistory, IHistoryParent, HistorySchemaFactory };
 

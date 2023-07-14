@@ -3,23 +3,13 @@ import { NotFoundError } from '../../shared/errors/not-found';
 import { ResourceResponse, Resource } from '../../shared/responses/resource';
 import { HistoryService } from '../../shared/services/history.service';
 import { Truck, TruckHistory, ITruck, ITruckHistory } from './models/truck';
-import { CreateTruckRequest } from './requests/create-truck';
-import { UpdateTruckRequest } from './requests/update-truck';
+import { CreateTruckRequest } from './api/create-truck';
+import { UpdateTruckRequest } from './api/update-truck';
 
 /**
  * Service for managing trucks.
  */
-export class TruckService {
-
-  private historyService: HistoryService<ITruck, ITruckHistory>;
-
-  /**
-  * Constructs a new instance of the TruckService class.
-  */
-  constructor() {
-    this.historyService = new HistoryService()
-  }
-
+export class TruckService extends HistoryService<ITruck, ITruckHistory> {
   /**
   * Creates a new truck.
   * 
@@ -40,14 +30,14 @@ export class TruckService {
  */
   public async update(id: string, request: UpdateTruckRequest) {
     const truck = await Truck.findById(id);
-    if (!truck) throw NotFoundError.CreateWithId(id);
+    if (!truck || truck.isDeleted) throw NotFoundError.CreateWithId(id);
 
     // Verify version
     if (request.version !== truck.__v) {
       throw new ConflictError();
     }
 
-    const history = await this.historyService.createHistory(truck, TruckHistory);
+    const history = await this.createHistory(truck, TruckHistory);
 
     //todo: some sort of AutoMapper?
     truck.fleet = request.fleet;
@@ -71,7 +61,7 @@ export class TruckService {
  */
   public async get(id: string): Promise<ITruck> {
     const truck = await Truck.findById(id);
-    if (!truck) throw NotFoundError.CreateWithId(id);
+    if (!truck || truck.isDeleted) throw NotFoundError.CreateWithId(id);
     return truck;
   }
 
@@ -79,11 +69,15 @@ export class TruckService {
    * Deletes a truck by its ID.
    * 
    * @param id - The ID of the truck to delete.
+   * @param version - The version of the record to delete.
    * @throws NotFoundError if the truck with the specified ID is not found.
    */
-  public async delete(id: string) {
+  public async delete(id: string, version: number) {
     const truck = await Truck.findById(id);
     if (!truck) throw NotFoundError.CreateWithId(id);
+    if (version !== truck.__v) {
+      throw new ConflictError();
+    }
     truck.isDeleted = true;
     truck.save();
   }

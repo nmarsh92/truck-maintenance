@@ -1,46 +1,49 @@
 import { Schema, model } from 'mongoose';
-import { IAuditableDocument, AuditableSchema } from '../../../shared/models/auditable-document';
-import { HistorySchemaFactory, IHistoryDocument } from '../../../shared/models/history-document';
+import { IAuditable, AuditableSchema } from '../../../shared/models/auditable';
+import { HistorySchemaFactory, IHistory, IHistoryParent } from '../../../shared/models/history';
+const TRUCK_SCHEMA = 'Truck';
+const TRUCK_HISTORY_SCHEMA = 'TruckHistory';
+/**
+ * Represents a Truck entity.
+ * @interface
+ */
+interface ITruck {
+  fleet?: string;
+  driver?: string;
+  totalMiles?: number;
+  truckName?: string;
+  truckNo?: string;
+}
 
 /**
  * Represents a Truck entity.
  * @interface
- * @extends {AuditableDocument}
+ * @extends {IAuditable}
+ * @extends {IHistoryParent<ITruckHistory> }
  */
-interface ITruck extends IAuditableDocument {
-  fleet?: string;
-  driver?: string;
-  totalMiles?: number;
-  truckName?: string;
-  truckNo?: string;
-  history: ITruckHistory[];
-}
+interface IAuditableTruck extends ITruck, IAuditable, IHistoryParent<ITruckHistory> { }
 
 /**
- * todo
+ * Historical record of a truck.
  */
-interface ITruckHistory extends IHistoryDocument<ITruck> {
-  fleet?: string;
-  driver?: string;
-  totalMiles?: number;
-  truckName?: string;
-  truckNo?: string;
-}
+interface ITruckHistory extends ITruck, IHistory<ITruck> { }
 
 /**
- * todo
+ * The truck schema.
+ * @type {Schema<IAuditableTruck>}
  */
-const truckSchema = new Schema<ITruck>({
+const truckSchema = new Schema<IAuditableTruck>({
   fleet: { type: String },
   driver: { type: String },
   totalMiles: { type: Number },
   truckName: { type: String },
   truckNo: { type: String },
-  history: [{ type: Schema.Types.ObjectId, ref: 'TruckHistory' }]
-}).add(AuditableSchema);
+}).add(AuditableSchema)
+  .add(HistorySchemaFactory.createParent(TRUCK_HISTORY_SCHEMA))
 
 /**
- * todo
+ * The truck history schema.
+ * @type {Schema<ITruckHistory>}
  */
 const truckHistorySchema = new Schema<ITruckHistory>({
   fleet: { type: String },
@@ -48,9 +51,9 @@ const truckHistorySchema = new Schema<ITruckHistory>({
   totalMiles: { type: Number },
   truckName: { type: String },
   truckNo: { type: String },
-}).add(HistorySchemaFactory.create("Truck"));
+}).add(HistorySchemaFactory.createChild(TRUCK_SCHEMA));
 
-const Truck = model<ITruck>('Truck', truckSchema);
-const TruckHistory = model<ITruckHistory>('TruckHistory', truckHistorySchema)
+const Truck = model<IAuditableTruck>(TRUCK_SCHEMA, truckSchema);
+const TruckHistory = model<ITruckHistory>(TRUCK_HISTORY_SCHEMA, truckHistorySchema)
 
-export { Truck, ITruck, TruckHistory, ITruckHistory }
+export { Truck, ITruck, IAuditableTruck, TruckHistory, ITruckHistory }

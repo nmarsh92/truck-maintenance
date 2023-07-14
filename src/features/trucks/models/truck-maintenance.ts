@@ -1,5 +1,5 @@
 import { Schema, Document, model, Types } from 'mongoose';
-import { IAuditableDocument, AuditableSchema } from '../../../shared/models/auditable-document';
+import { IAuditable, AuditableSchema } from '../../../shared/models/auditable';
 import { ITruck } from './truck';
 
 /**
@@ -13,9 +13,9 @@ enum Maintenance {
 /**
  * Represents a User entity.
  * @interface
- * @extends {IAuditableDocument}
+ * @extends {IAuditable}
  */
-interface TruckMaintenance extends IAuditableDocument, Document {
+interface TruckMaintenance extends IAuditable {
   type: Maintenance;
   frequency: number | Date;
   truck: Types.ObjectId | ITruck;
