@@ -6,6 +6,7 @@ import helmet from "helmet";
 import cors from "cors";
 import { errorHandler } from './src/shared/middleware/error-handler';
 import { router as truckRoutes, base as truckBase } from "./src/features/trucks/truck.routes";
+import { router as authRoutes, base as authBase } from "./src/features/auth/auth.routes"
 import { connect } from './src/shared/database/mongoose';
 import cookieParser from "cookie-parser";
 dotenv.config();
@@ -32,6 +33,7 @@ app.use(cookieParser());
 if (process.env.NODE_ENV !== 'production')
   app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, { explorer: true }));
 app.use(truckBase, truckRoutes);
+app.use(authBase, authRoutes)
 
 
 app.use(errorHandler);

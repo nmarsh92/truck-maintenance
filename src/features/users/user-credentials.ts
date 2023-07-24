@@ -1,31 +1,29 @@
-import { Schema, Document, model, Types } from 'mongoose';
-import { IAuditable, AuditableSchema } from '../../shared/models/auditable';
-import { IUserProfile } from './user-profile';
+import { Schema, model } from 'mongoose';
+
+
+const USER_CREDENTIALS_SCHEMA = "UserCredentials";
+
 /**
- * Represents a User entity.
+ *  Identity provider.
+ */
+interface IIdentityProvider {
+  id: string | number,
+  name: string,
+}
+
+/**
+ * Represents a UserCredentials entity.
  * @interface
  * @extends {IAuditable}
  */
-interface IUserCredentials extends IAuditable, Document {
-  hashedPassword: string;
-  salt: string;
-  lockedAt: Date;
-  lockedMins: number;
-  attempts: number;
-  isAdmin: boolean;
-  profile: Types.ObjectId | IUserProfile;
+interface IUserCredentials {
+  providers: Array<IIdentityProvider>
 }
 
-const userCredentialsSchema = new Schema<IUserCredentials>({
-  hashedPassword: { type: String, required: true },
-  salt: { type: String, required: true },
-  lockedAt: { type: Date },
-  lockedMins: { type: Number, default: 0 },
-  attempts: { type: Number, default: 0 },
-  isAdmin: { type: Boolean, default: false },
-  profile: { type: Types.ObjectId, ref: 'UserProfile' },
+const userSchema = new Schema<IUserCredentials>({
+  providers: { type: [{ id: Schema.Types.Mixed, name: String }] },
 });
 
-userCredentialsSchema.add(AuditableSchema);
+const UserCredentials = model<IUserCredentials>(USER_CREDENTIALS_SCHEMA, userSchema);
 
-export const UserCredentials = model<IUserCredentials>('UserCredentials', userCredentialsSchema);
+export { UserCredentials, IUserCredentials }

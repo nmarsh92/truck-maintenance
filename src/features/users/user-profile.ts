@@ -6,7 +6,7 @@ import { IAuditable, AuditableSchema } from '../../shared/models/auditable';
  * @interface
  * @extends {AuditableDocument}
  */
-interface IUserProfile extends IAuditable, Document {
+interface IUserProfile extends IAuditable {
   // forUser: Types.ObjectId;
   email: string;
   firstName: string;

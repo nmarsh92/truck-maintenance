@@ -1,6 +1,6 @@
 import { Schema, Document, model, Types } from 'mongoose';
 import { IAuditable, AuditableSchema } from '../../shared/models/auditable';
-import { IUserProfile } from './user-profile';
+import { IUser } from './user';
 
 /**
  *  Actvity.
@@ -18,16 +18,17 @@ enum Activity {
  */
 interface IUserActivity extends IAuditable, Document {
   type: Activity,
-  user: Types.ObjectId | IUserProfile;
+  user: Types.ObjectId | IUser;
 }
 
 const userActivitySchema = new Schema<IUserActivity>({
   type: { type: String, required: true, enum: Object.values(Activity) },
-  user: { type: Types.ObjectId, ref: 'UserProfile' },
+  user: { type: Types.ObjectId, ref: 'User' },
 });
 
 userActivitySchema.add(AuditableSchema);
 
-export const UserActivity = model<IUserActivity>('UserActivity', userActivitySchema);
+const UserActivity = model<IUserActivity>('UserActivity', userActivitySchema);
 
+export { IUserActivity, UserActivity, Activity }
 

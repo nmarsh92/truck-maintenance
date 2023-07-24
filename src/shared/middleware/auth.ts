@@ -19,11 +19,15 @@ export const isAuthorized = async (req: Request, res: Response, next: NextFuncti
 
 
     const payload = ticket.getPayload();
-    const userid = payload?.sub;
 
-    console.log(payload);
-    console.log(payload?.hd); //todo need this populated and verify the domain so only nac can login
-    //todo: access tokens?
+
+    if (payload?.hd !== process.env.VERIFIED_DOMAIN)
+      throw new UnauthorizedError();
+
+    //todo: create or get
+    //todo: generate access token
+
+
     next();
   } catch (error) {
     next(error)
