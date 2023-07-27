@@ -18,11 +18,6 @@ export class Environment {
   public readonly isProduction: boolean;
 
   /**
-   * JSON Web Token (JWT) secret used for authentication and authorization in the application.
-   */
-  public readonly jwtSecret: string;
-
-  /**
    * The port number on which the application should listen.
    * Defaults to 80 in production, or 8080 in non-production environments if not provided.
    */
@@ -79,15 +74,14 @@ export class Environment {
    */
   private constructor() {
     this.isProduction = process.env.NODE_ENV === PRODUCTION;
-    this.jwtSecret = this.getOrThrow(process.env.JWT_SECRET);
     this.port = this.isProduction ? 80 : parseInt(process.env.PORT || "8080");
-    this.mongoUser = this.getOrThrow(process.env.MONGO_USER);
-    this.mongoPassword = this.getOrThrow(process.env.MONGO_PASSWORD);
-    this.db = this.getOrThrow(process.env.DB);
-    this.googleClientId = this.getOrThrow(process.env.GOOGLE_CLIENT_ID);
-    this.googleSecret = this.getOrThrow(process.env.GOOGLE_CLIENT_SECRET);
-    this.verifiedDomains = this.getOrThrow(process.env.VERIFIED_DOMAINS).split(",");
-    const clientsString = this.getOrThrow(process.env.CLIENTS);
+    this.mongoUser = this.getOrThrow("MONGO_USER");
+    this.mongoPassword = this.getOrThrow("MONGO_PASSWORD");
+    this.db = this.getOrThrow("DB");
+    this.googleClientId = this.getOrThrow("GOOGLE_CLIENT_ID");
+    this.googleSecret = this.getOrThrow("GOOGLE_CLIENT_SECRET");
+    this.verifiedDomains = this.getOrThrow("VERIFIED_DOMAINS").split(",");
+    const clientsString = this.getOrThrow("CLIENTS");
     clientsString.split(",").forEach(clientStr => {
       const clientPair = clientStr.split(":");
       if (!clientPair || clientPair.length != 2) throw new Error("Invalid client pair.");
@@ -95,8 +89,8 @@ export class Environment {
     });
 
     // Read AUDIENCE and ISSUER environment variables and store them
-    this.audience = this.getOrThrow(process.env.AUDIENCE);
-    this.issuer = this.getOrThrow(process.env.ISSUER);
+    this.audience = this.getOrThrow("AUDIENCE");
+    this.issuer = this.getOrThrow("ISSUER");
   }
 
   /**
@@ -133,8 +127,10 @@ export class Environment {
    * @returns {string} The value of the environment variable.
    * @throws {Error} If the environment variable is not defined.
    */
-  private getOrThrow(value?: string): string {
-    if (!value) throw new Error("Missing required environment variable");
+  private getOrThrow(key?: string): string {
+    if (!key) throw new Error(`Missing required environment key`);
+    const value: string = process.env[key] || "";
+    if (!value) throw new Error(`Missing required environment variable(${key})`);
     return value;
   }
 }

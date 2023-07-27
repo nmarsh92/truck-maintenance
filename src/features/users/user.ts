@@ -2,6 +2,7 @@ import { Schema, model, Types } from 'mongoose';
 import { IAuditable, AuditableSchema } from '../../shared/models/auditable';
 import { IPermission } from '../auth/permission';
 import { IUserActivity } from './user-activity';
+import { IHasId } from '../../shared/models/hasId';
 
 const USER_SCHEMA = "User";
 /**
@@ -9,7 +10,7 @@ const USER_SCHEMA = "User";
  * @interface
  * @extends {IAuditable}
  */
-interface IUser extends IAuditable {
+interface IUser extends IAuditable, IHasId {
   profile: IUserProfile;
   permissions: Array<IPermission>,
   credentials: IUserCredentials,
@@ -56,7 +57,7 @@ interface IUserProfile {
    * The phone number of the user.
    * @type {string}
    */
-  phone: string;
+  phone?: string;
 }
 
 const userSchema = new Schema<IUser>({
@@ -75,4 +76,4 @@ userSchema.add(AuditableSchema);
 
 const User = model<IUser>(USER_SCHEMA, userSchema);
 
-export { User, IUser }
+export { User, IUser, IUserProfile }

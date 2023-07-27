@@ -61,7 +61,7 @@ export const addAndGetRefreshToken = async (userId?: string, clientId?: string, 
  * @param {string} tokenKey - The token key to be invalidated.
  * @throws {ArgumentNullError} - When `userId` or `tokenKey` is empty or not provided.
  */
-export const invalidateRefreshToken = async (userId?: string, tokenKey?: string) => {
+export const invalidateRefreshToken = async (userId: string, tokenKey: string) => {
   if (!userId) throw new ArgumentNullError('id');
   if (!tokenKey) throw new ArgumentNullError('tokenId');
   const user = await getUserById(userId);
@@ -98,6 +98,7 @@ export const validateRefreshToken = async (userId?: string, tokenKey?: string): 
   if (!token.hashedTokenIdentifiers.some(tHash => tHash === hash)) {
     throw new UnauthorizedError("Invalid refresh token.");
   }
+
 };
 
 

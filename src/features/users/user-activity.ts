@@ -23,7 +23,7 @@ interface IUserActivity extends IAuditable, Document {
 }
 
 const userActivitySchema = new Schema<IUserActivity>({
-  type: { type: String, required: true, enum: Activity },
+  type: { type: String, required: true, enum: Object.values(Activity) },
   user: { type: Types.ObjectId, ref: 'User' },
 });
 

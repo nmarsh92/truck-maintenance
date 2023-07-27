@@ -11,6 +11,7 @@ import BadRequestError from "../errors/bad-request";
  */
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const errorHandler = (error: Error, _: Request, res: Response, next: NextFunction) => {
+  console.error(error);
   if (error instanceof BadRequestError) {
     res.status(error.statusCode).json({ ...error });
     return;

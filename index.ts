@@ -12,7 +12,7 @@ import cookieParser from "cookie-parser";
 import { UseRoutes } from './src/shared/helpers/routes';
 import { Environment } from './src/shared/environment';
 dotenv.config();
-
+console.log
 const app: Express = express();
 const port = process.env.PORT;
 const swaggerOptions = {
