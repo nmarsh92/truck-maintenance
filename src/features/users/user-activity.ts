@@ -8,7 +8,8 @@ import { IUser } from './user';
 enum Activity {
   Login = 'LOGIN',
   LoginAttemptFailed = 'LOGIN_ATTEMPT_FAILED',
-  LockedOut = 'LOCKED_OUT'
+  LockedOut = 'LOCKED_OUT',
+  SignUp = "SIGN_UP"
 }
 
 /**
@@ -22,7 +23,7 @@ interface IUserActivity extends IAuditable, Document {
 }
 
 const userActivitySchema = new Schema<IUserActivity>({
-  type: { type: String, required: true, enum: Object.values(Activity) },
+  type: { type: String, required: true, enum: Activity },
   user: { type: Types.ObjectId, ref: 'User' },
 });
 

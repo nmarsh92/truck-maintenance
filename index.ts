@@ -5,10 +5,12 @@ import * as dotenv from 'dotenv';
 import helmet from "helmet";
 import cors from "cors";
 import { errorHandler } from './src/shared/middleware/error-handler';
-import { router as truckRoutes, base as truckBase } from "./src/features/trucks/truck.routes";
-import { router as authRoutes, base as authBase } from "./src/features/auth/auth.routes"
+import { router as truckRoutes, name as truckName } from "./src/features/trucks/truck.routes";
+import { router as authRoutes, name as authName } from "./src/features/auth/auth.routes"
 import { connect } from './src/shared/database/mongoose';
 import cookieParser from "cookie-parser";
+import { UseRoutes } from './src/shared/helpers/routes';
+import { Environment } from './src/shared/environment';
 dotenv.config();
 
 const app: Express = express();
@@ -28,12 +30,13 @@ connect();
 app.use(helmet());
 app.use(cors());
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-if (process.env.NODE_ENV !== 'production')
+if (!Environment.getInstance().isProduction)
   app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, { explorer: true }));
-app.use(truckBase, truckRoutes);
-app.use(authBase, authRoutes)
+UseRoutes(app, truckName, truckRoutes);
+UseRoutes(app, authName, authRoutes);
 
 
 app.use(errorHandler);

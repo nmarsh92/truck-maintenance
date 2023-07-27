@@ -1,4 +1,3 @@
-import type { ErrorRequestHandler } from "express";
 import { Request, Response, NextFunction } from 'express';
 import { HttpError } from "../errors/http-error";
 import BadRequestError from "../errors/bad-request";

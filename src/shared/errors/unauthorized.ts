@@ -2,7 +2,7 @@ import { HTTP_STATUS_CODES } from "../constants/http";
 import { HttpError } from "./http-error";
 
 /***
- *  500 internal server error.
+ *  401 unauthorized.
  */
 export class UnauthorizedError extends HttpError {
   constructor(message = 'User is not authorized.') {

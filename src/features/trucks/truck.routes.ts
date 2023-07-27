@@ -4,7 +4,7 @@ import { validate } from '../../shared/validator';
 import { ValidationChain } from "express-validator"
 import { isAuthorized } from '../../shared/middleware/auth';
 import { checkCsrf } from '../../shared/middleware/csrf';
-export const base = '/trucks';
+export const name = 'trucks';
 export const router: Router = express.Router();
 const createRules: ValidationChain[] = [
   //body('fleet').notEmpty().withMessage("Fleet must be provided")
