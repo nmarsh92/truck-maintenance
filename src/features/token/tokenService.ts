@@ -1,7 +1,7 @@
 import jwt, { JwtPayload } from "jsonwebtoken";
 import { Environment } from "../../shared/environment";
 import { UnauthorizedError } from "../../shared/errors/unauthorized";
-import { validateRefreshToken as validateRefreshTokenStore } from "./token.store";
+import { validateRefreshToken as validateRefreshTokenStore } from "./tokenStore";
 
 
 /**

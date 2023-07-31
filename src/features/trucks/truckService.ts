@@ -1,10 +1,9 @@
 import { ConflictError } from '../../shared/errors/conflict';
 import { NotFoundError } from '../../shared/errors/not-found';
-import { ResourceResponse, Resource } from '../../shared/responses/resource';
-import { createHistory } from '../../shared/services/history.service';
-import { Truck, TruckHistory, ITruck, ITruckHistory, IAuditableTruck } from './models/truck';
-import { CreateTruckRequest } from './api/create-truck';
-import { UpdateTruckRequest } from './api/update-truck';
+import { createHistory } from '../../shared/services/historyService';
+import { TruckModel, TruckHistoryModel, Truck, TruckHistory, AuditableTruck } from './models/truck';
+import { CreateTruckRequest } from './api/createTruckRequest';
+import { UpdateTruckRequest } from './api/updateTruckRequest';
 
 /**
 * Creates a new truck.
@@ -13,7 +12,7 @@ import { UpdateTruckRequest } from './api/update-truck';
 * @returns A promise that resolves to a resource response with the created truck's information.
 */
 export const createHandler = async (request: CreateTruckRequest) => {
-  const truck = new Truck(request);
+  const truck = new TruckModel(request);
   const savedTruck = await truck.save();
   return savedTruck;
 }
@@ -25,7 +24,7 @@ export const createHandler = async (request: CreateTruckRequest) => {
  * @param request - The update truck request.
 */
 export const updateHandler = async (id: string, request: UpdateTruckRequest) => {
-  const truck = await Truck.findById(id);
+  const truck = await TruckModel.findById(id);
   if (!truck || truck.isDeleted) throw NotFoundError.CreateWithId(id);
 
   // Verify version
@@ -33,7 +32,7 @@ export const updateHandler = async (id: string, request: UpdateTruckRequest) => 
     throw new ConflictError();
   }
 
-  const history = await createHistory<ITruck, ITruckHistory>(truck, TruckHistory);
+  const history = await createHistory<Truck, TruckHistory>(truck, TruckHistoryModel);
 
   //todo: some sort of AutoMapper?
   truck.fleet = request.fleet;
@@ -55,8 +54,8 @@ export const updateHandler = async (id: string, request: UpdateTruckRequest) => 
 * @returns A promise that resolves to the retrieved truck.
 * @throws NotFoundError if the truck with the specified ID is not found.
 */
-export const getHandler = async (id: string): Promise<ITruck> => {
-  const truck = await Truck.findById(id);
+export const getHandler = async (id: string): Promise<Truck> => {
+  const truck = await TruckModel.findById(id);
   if (!truck || truck.isDeleted) throw NotFoundError.CreateWithId(id);
   return truck;
 }
@@ -69,7 +68,7 @@ export const getHandler = async (id: string): Promise<ITruck> => {
  * @throws NotFoundError if the truck with the specified ID is not found.
  */
 export const deleteHandler = async (id: string, version: number) => {
-  const truck = await Truck.findById(id);
+  const truck = await TruckModel.findById(id);
   if (!truck) throw NotFoundError.CreateWithId(id);
   if (version !== truck.__v) {
     throw new ConflictError();

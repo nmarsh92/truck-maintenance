@@ -1,15 +1,15 @@
 import { NextFunction, Request, Response } from "express";
 import { UnauthorizedError } from "../../shared/errors/unauthorized";
-import { getOrCreateUser, getUserById } from "../users/user.service";
+import { getOrCreateUser, getUserById } from "../users/userService";
 import jws from "jws";
 import jwt from "jsonwebtoken";
-import { withErrorHandler } from "../../shared/controller-base";
+import { withErrorHandler } from "../../shared/controllerBase";
 import { OAuth2Client } from "google-auth-library";
 import { Environment } from "../../shared/environment";
-import { ITokenPayload } from "../token/token-payload";
-import { addAndGetRefreshToken, invalidateRefreshToken } from "../token/token.store";
+import { TokenPayload } from "../token/tokenPayload";
+import { addAndGetRefreshToken, invalidateRefreshToken } from "../token/tokenStore";
 import BadRequestError from "../../shared/errors/bad-request";
-import { validateAndGetAccessToken, validateAndGetRefreshToken } from "../token/token.service";
+import { validateAndGetAccessToken, validateAndGetRefreshToken } from "../token/tokenService";
 import { HS256 } from "../../shared/constants/encrpytion";
 import { AUTH_REDIRECT_URI, INVALID_LOGIN_URI, LOGGED_IN_URI } from "../../shared/constants/api";
 import { HTTP_STATUS_CODES } from "../../shared/constants/http";
@@ -99,9 +99,9 @@ export const authorize = withErrorHandler(async (req: Request, res: Response): P
 
   const user = await getUserById(userId);
   // Generate and return the access and refresh tokens
-  const payload: ITokenPayload = { email: user.profile.email, firstName: user.profile.firstName, lastName: user.profile.lastName };
+  const payload: TokenPayload = { email: user.email, firstName: user.firstName, lastName: user.lastName };
   const access_token = jwt.sign(payload, clientSecret, { expiresIn: 1800, subject: userId, audience: environment.audience, issuer: environment.issuer }); // Expires in 30 minutes
-  const refresh_token = await addAndGetRefreshToken(userId, clientId, true); // Expires in 10 days
+  const refresh_token = await addAndGetRefreshToken(userId, clientId); // Expires in 10 days
   res.status(HTTP_STATUS_CODES.OK).json({ access_token, refresh_token });
 });
 
@@ -130,7 +130,7 @@ export const token = withErrorHandler(async (req: Request, res: Response, next: 
 
   const access_token = jwt.sign({ sub: payload.sub }, secret, { expiresIn: 1800, audience: payload.aud, subject: payload.sub });
   await invalidateRefreshToken(payload.sub, refreshToken.key);
-  const refresh_token = await addAndGetRefreshToken(payload.sub, clientId, false);
+  const refresh_token = await addAndGetRefreshToken(payload.sub, clientId);
 
   res.status(HTTP_STATUS_CODES.CREATED).json({ access_token, refresh_token });
 });

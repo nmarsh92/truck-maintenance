@@ -4,25 +4,25 @@ import { Schema, Types } from 'mongoose';
  * Required fields for a historic child.
  * @interface
  */
-interface IHistory<T> {
+interface History<T> {
   /**
    * The ID of the parent document.
    * @type {date} 
-   * @memberof IHistory
+   * @memberof History
    */
   parent: Types.ObjectId | T
 
   /**
  * When the this revision expired.
  * @type {date} 
- * @memberof IHistory
+ * @memberof History
 */
   expiredAt: Date | number;
 
   /**
   * When the this revision expired.
   * @type {date} 
-  * @memberof IHistory
+  * @memberof History
   */
   createdAt: Date;
 
@@ -35,9 +35,9 @@ interface IHistory<T> {
 /**
  *  An entity with history.
  */
-interface IHistoryParent<T> {
+interface HistoryParent<T> {
   /**
-   * @memberof IHistoryParent
+   * @memberof HistoryParent
    */
   history: Array<T>
 }
@@ -69,5 +69,5 @@ class HistorySchemaFactory {
   }
 }
 
-export { IHistory, IHistoryParent, HistorySchemaFactory };
+export { History, HistoryParent, HistorySchemaFactory };
 

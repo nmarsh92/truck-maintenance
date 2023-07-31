@@ -1,12 +1,12 @@
 import { Schema, model, Document } from "mongoose";
-import { IAuditable, AuditableSchema } from '../../shared/models/auditable';
+import { Auditable, AuditableSchema } from '../../shared/models/auditable';
 
 const PERMISSION_SCHEMA = "permission";
 
 /**
  * Interface representing a Permission.
  */
-interface IPermission extends IAuditable {
+interface IPermission extends Auditable {
   code: string;
   description: string;
 }

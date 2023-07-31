@@ -1,4 +1,4 @@
-export interface IAuthClient {
+export interface AuthClient {
   id: string;
   secret: string;
 }

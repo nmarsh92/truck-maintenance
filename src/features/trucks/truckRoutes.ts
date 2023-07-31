@@ -1,5 +1,5 @@
 import express, { Router } from 'express';
-import { find, get, create, deleteOne, update } from './truck.controller';
+import { find, get, create, deleteOne, update } from './truckController';
 import { validate } from '../../shared/validator';
 import { ValidationChain } from "express-validator"
 import { isAuthorized } from '../../shared/middleware/auth';

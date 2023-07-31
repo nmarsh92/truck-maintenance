@@ -4,9 +4,9 @@ import swaggerUi from 'swagger-ui-express';
 import * as dotenv from 'dotenv';
 import helmet from "helmet";
 import cors from "cors";
-import { errorHandler } from './src/shared/middleware/error-handler';
-import { router as truckRoutes, name as truckName } from "./src/features/trucks/truck.routes";
-import { router as authRoutes, name as authName } from "./src/features/auth/auth.routes"
+import { errorHandler } from './src/shared/middleware/errorHandler';
+import { router as truckRoutes, name as truckName } from "./src/features/trucks/truckRoutes";
+import { router as authRoutes, name as authName } from "./src/features/auth/authRoutes"
 import { connect } from './src/shared/database/mongoose';
 import cookieParser from "cookie-parser";
 import { UseRoutes } from './src/shared/helpers/routes';

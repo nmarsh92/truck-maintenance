@@ -1,57 +1,51 @@
 import { ArgumentNullError } from "../../shared/errors/argument-null-error";
-import { getUserById } from "../users/user.service";
 import bcrypt from "bcrypt";
-import { IRefreshTokenStore, RefreshToken } from "./token";
+import { RefreshTokenModel, RefreshToken } from "./models/refreshToken";
 import { HydratedDocument } from "mongoose";
 import { NotFoundError } from "../../shared/errors/not-found";
 import { v4 as uuidv4 } from 'uuid';
 import jwt, { SignOptions } from "jsonwebtoken";
-import { IRefreshTokenPayload } from "./token-payload";
+import { RefreshTokenPayload } from "./tokenPayload";
 import { Environment } from "../../shared/environment";
 import { UnauthorizedError } from "../../shared/errors/unauthorized";
+import { ensureExists, getUserById } from "../users/userStore";
 const saltRounds = 10;
-
+const expiresIn = 864000;
 /**
  * Adds a new refresh token to the database or retrieves an existing one.
  *
  * @param {string} userId - The ID of the user for whom the refresh token is associated.
- * @param {boolean} create - A flag indicating whether to create a new refresh token if it doesn't exist.
+ * @param {string} clientId - Client Id.
  * @returns {Promise<string>} - The newly generated token key if a new refresh token is created.
  * @throws {ArgumentNullError} - When `userId` is empty or not provided.
  * @throws {NotFoundError} - When `create` is false and the refresh token doesn't exist.
  */
-export const addAndGetRefreshToken = async (userId?: string, clientId?: string, createRecord?: boolean): Promise<string> => {
+export const addAndGetRefreshToken = async (userId?: string, clientId?: string): Promise<string> => {
   if (!userId) throw new ArgumentNullError('id');
   if (!clientId) throw new ArgumentNullError('clientId');
   const env = Environment.getInstance();
   const tokenKey = uuidv4();
   const user = await getUserById(userId);
-  let refreshToken = await RefreshToken.findOne({ userId });
+  if (!user) throw new NotFoundError("User not found");
 
-  if (!refreshToken) {
-    if (createRecord) {
-      // If create flag is true and the refreshToken doesn't exist, create a new one
-      refreshToken = new RefreshToken({
-        userId: userId,
-        hashedTokenIdentifiers: [] // Initialize an empty array for storing hashed tokens
-      });
-    } else {
-      throw new NotFoundError();
-    }
-  }
-  const refreshPayload: IRefreshTokenPayload = {
+
+  const refreshPayload: RefreshTokenPayload = {
     key: tokenKey,
-    email: user.profile.email,
-    firstName: user.profile.firstName,
-    lastName: user.profile.lastName,
+    email: user.email,
+    firstName: user.firstName,
+    lastName: user.lastName,
   }
-  const hash = await getTokenHash(tokenKey);
-  refreshToken.hashedTokenIdentifiers.push(hash);
+  const hash = await hashToken(tokenKey);
 
+  const refreshToken = await RefreshTokenModel.create({
+    userId: userId,
+    hashedTokenIdentifier: hash,
+    expiredAt: new Date(Date.now() + expiresIn)
+  });
 
 
   await refreshToken.save();
-  return jwt.sign(refreshPayload, env.getSecret(clientId), { expiresIn: 864000, subject: userId, audience: env.audience, issuer: env.issuer });
+  return jwt.sign(refreshPayload, env.getSecret(clientId), { expiresIn, subject: userId, audience: env.audience, issuer: env.issuer });
 }
 
 /**
@@ -64,12 +58,10 @@ export const addAndGetRefreshToken = async (userId?: string, clientId?: string, 
 export const invalidateRefreshToken = async (userId: string, tokenKey: string) => {
   if (!userId) throw new ArgumentNullError('id');
   if (!tokenKey) throw new ArgumentNullError('tokenId');
-  const user = await getUserById(userId);
-  const token = await getRefreshToken(userId);
-  const hash = await getTokenHash(tokenKey);
-  token.hashedTokenIdentifiers = token.hashedTokenIdentifiers.filter(tHash => {
-    return tHash !== hash;
-  });
+  await ensureExists(userId);
+  const token = await getRefreshToken(userId, tokenKey);
+  token.expiredAt = new Date(Date.now() + (1000 * 60));
+  token.save();
 }
 
 /**
@@ -84,21 +76,14 @@ export const invalidateRefreshToken = async (userId: string, tokenKey: string) =
 export const validateRefreshToken = async (userId?: string, tokenKey?: string): Promise<void> => {
   if (!userId) throw new ArgumentNullError('id');
   if (!tokenKey) throw new ArgumentNullError('tokenId');
-
-  // Retrieve the user from the database
-  const user = await getUserById(userId);
+  await ensureExists(userId);
 
   // Get the refresh token document for the user
-  const token = await getRefreshToken(userId);
+  const token = await getRefreshToken(userId, tokenKey);
 
-  // Hash the token key for comparison
-  const hash = await getTokenHash(tokenKey);
 
-  // Check if the provided token key matches any of the hashed token identifiers in the document
-  if (!token.hashedTokenIdentifiers.some(tHash => tHash === hash)) {
+  if (!token)
     throw new UnauthorizedError("Invalid refresh token.");
-  }
-
 };
 
 
@@ -110,9 +95,11 @@ export const validateRefreshToken = async (userId?: string, tokenKey?: string): 
  * @throws {ArgumentNullError} - When `userId` is empty or not provided.
  * @throws {NotFoundError} - When the refresh token for the user is not found.
  */
-const getRefreshToken = async (userId: string): Promise<HydratedDocument<IRefreshTokenStore>> => {
+const getRefreshToken = async (userId: string, tokenKey: string): Promise<HydratedDocument<RefreshToken>> => {
   if (!userId) throw new ArgumentNullError('userId');
-  const token = await RefreshToken.findOne({ userId: userId });
+  if (!tokenKey) throw new ArgumentNullError("tokenKey");
+  const hash = await hashToken(tokenKey);
+  const token = await RefreshTokenModel.findOne({ userId: userId, hashedTokenIdentifier: hash });
   if (!token) throw new NotFoundError("No refresh tokens found.");
   return token;
 }
@@ -124,7 +111,7 @@ const getRefreshToken = async (userId: string): Promise<HydratedDocument<IRefres
  * @returns {Promise<string>} - The hashed token identifier.
  * @throws {ArgumentNullError} - When `tokenIdentifier` is empty or not provided.
  */
-const getTokenHash = async (tokenIdentifier: string) => {
+const hashToken = async (tokenIdentifier: string): Promise<string> => {
   if (!tokenIdentifier) throw new ArgumentNullError("TokenIdentifer");
   return await bcrypt.hash(tokenIdentifier, saltRounds);
 }

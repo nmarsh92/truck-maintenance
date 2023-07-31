@@ -1,8 +1,8 @@
 import { NextFunction, Request, Response } from 'express';
 import { ServerError } from '../../shared/errors/server-error';
-import { updateHandler, createHandler, deleteHandler, getHandler } from './truck.service';
-import { CreateTruckRequest } from './api/create-truck';
-import { UpdateTruckRequest } from './api/update-truck';
+import { updateHandler, createHandler, deleteHandler, getHandler } from './truckService';
+import { CreateTruckRequest } from './api/createTruckRequest';
+import { UpdateTruckRequest } from './api/updateTruckRequest';
 import { ResourceResponse } from '../../shared/responses/resource';
 
 /**

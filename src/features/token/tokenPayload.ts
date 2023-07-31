@@ -1,7 +1,7 @@
 /**
  * Interface representing the payload of an access token.
  */
-export interface ITokenPayload {
+export interface TokenPayload {
   /**
    * The email associated with the user.
    */
@@ -22,7 +22,7 @@ export interface ITokenPayload {
  * Interface representing the payload of a refresh token.
  * Extends the ITokenPayload interface to include additional properties.
  */
-export interface IRefreshTokenPayload extends ITokenPayload {
+export interface RefreshTokenPayload extends TokenPayload {
   /**
    * The unique identifier of the user.
    */

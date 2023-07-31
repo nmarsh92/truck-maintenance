@@ -1,3 +1,3 @@
-export interface IHasId {
-  _id: string
+export interface HasId {
+  id: string
 }

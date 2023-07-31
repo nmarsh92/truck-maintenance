@@ -1,5 +1,5 @@
 import { HydratedDocument, Model } from "mongoose";
-import { IHistory } from "../models/history";
+import { History } from "../models/history";
 
 /**
 * Creates a history item for the provided document.
@@ -7,7 +7,7 @@ import { IHistory } from "../models/history";
 * @param historyClass - The history model class.
 * @returns The created history item.
 */
-export const createHistory = async <T, THistory extends IHistory<T>>(item: HydratedDocument<T>, historyClass: Model<THistory>): Promise<THistory> => {
+export const createHistory = async <T, THistory extends History<T>>(item: HydratedDocument<T>, historyClass: Model<THistory>): Promise<THistory> => {
   const historyItem: THistory = {
     ...item.toObject(),
     expiredAt: Date.now(),
