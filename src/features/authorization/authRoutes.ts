@@ -1,12 +1,12 @@
 import express, { NextFunction, Request, Response, Router } from "express";
-import { authorize, google, getUserInfo, token, invalidate } from "./authController";
+import { authorize, authenticateWithGoogle, getUserInfo, token, invalidate } from "./authorizationController";
 import { getUserById } from "../users/userStore";
 
 
 export const name = 'auth';
 export const router: Router = express.Router();
 
-router.post("/google", google)
+router.post("/authenticate/google", authenticateWithGoogle)
 router.get("/authorize", authorize);
 router.get("/userinfo", getUserInfo)
 router.get("/token", token);

@@ -6,7 +6,7 @@ import helmet from "helmet";
 import cors from "cors";
 import { errorHandler } from './src/shared/middleware/errorHandler';
 import { router as truckRoutes, name as truckName } from "./src/features/trucks/truckRoutes";
-import { router as authRoutes, name as authName } from "./src/features/auth/authRoutes"
+import { router as authRoutes, name as authName } from "./src/features/authorization/authRoutes"
 import { connect } from './src/shared/database/mongoose';
 import cookieParser from "cookie-parser";
 import { UseRoutes } from './src/shared/helpers/routes';
