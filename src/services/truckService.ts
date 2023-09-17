@@ -1,9 +1,12 @@
 import { ConflictError } from '../domain/error/conflict';
 import { NotFoundError } from '../domain/error/not-found';
-import { createHistory } from './base/historyService';
-import { TruckModel, TruckHistoryModel, Truck, TruckHistory, AuditableTruck } from '../models/truck';
+import { createHistory } from './historyService';
+import { TruckModel } from '../models/truck/truck';
 import { CreateTruckRequest } from '../api/truck/createTruckRequest';
 import { UpdateTruckRequest } from '../api/truck/updateTruckRequest';
+import { Truck } from '../domain/truck/truck';
+import { TruckHistory } from '../domain/truck/truckHistory';
+import { TruckHistoryModel } from '../models/truck/truckHistory';
 
 /**
 * Creates a new truck.

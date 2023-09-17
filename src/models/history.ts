@@ -1,48 +1,6 @@
 import { Schema, Types } from 'mongoose';
 
 /**
- * Required fields for a historic child.
- * @interface
- */
-interface History<T> {
-  /**
-   * The ID of the parent document.
-   * @type {date} 
-   * @memberof History
-   */
-  parent: Types.ObjectId | T
-
-  /**
- * When the this revision expired.
- * @type {date} 
- * @memberof History
-*/
-  expiredAt: Date | number;
-
-  /**
-  * When the this revision expired.
-  * @type {date} 
-  * @memberof History
-  */
-  createdAt: Date;
-
-  /**
-   * Version of the revision.
-   */
-  version: number;
-}
-
-/**
- *  An entity with history.
- */
-interface HistoryParent<T> {
-  /**
-   * @memberof HistoryParent
-   */
-  history: Array<T>
-}
-
-/**
  *  Factory for creating a history schema.
  */
 class HistorySchemaFactory {
@@ -69,5 +27,5 @@ class HistorySchemaFactory {
   }
 }
 
-export { History, HistoryParent, HistorySchemaFactory };
+export { HistorySchemaFactory };
 

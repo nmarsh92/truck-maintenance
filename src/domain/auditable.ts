@@ -1,10 +1,8 @@
-import { Schema } from 'mongoose';
-
 /**
  * Audit properties for an entity.
  * @interface
  */
-interface Auditable {
+export interface Auditable {
   /**
    * The creation date.
    * @type {date} 
@@ -26,13 +24,3 @@ interface Auditable {
    */
   isDeleted: boolean;
 }
-
-const AuditableSchema = new Schema(
-  {
-    isDeleted: { type: Boolean, default: false }
-  },
-  { optimisticConcurrency: true, timestamps: true }
-);
-
-export { Auditable, AuditableSchema };
-

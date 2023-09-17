@@ -1,6 +1,7 @@
 import { Schema, model, Types } from 'mongoose';
-import { Auditable, AuditableSchema } from './base/auditable';
-import { Truck } from './truck';
+import { AuditableSchema } from '../auditable';
+import { Truck } from '../../domain/truck/truck';
+import { Auditable } from '../../domain/auditable';
 
 /**
  *  Event.

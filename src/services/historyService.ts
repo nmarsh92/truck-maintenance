@@ -1,5 +1,5 @@
 import { HydratedDocument, Model } from "mongoose";
-import { History } from "../../models/base/history";
+import { History } from "../domain/history/history";
 
 /**
 * Creates a history item for the provided document.
