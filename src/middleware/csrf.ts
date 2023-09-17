@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { UnauthorizedError } from "../errors/unauthorized";
+import { UnauthorizedError } from "../domain/error/unauthorized";
 
 export const checkCsrf = async (req: Request, res: Response, next: NextFunction) => {
   const csrfCookie = req.cookies["csrf_token"];

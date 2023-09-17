@@ -1,5 +1,5 @@
 import { Schema, Document, model, Types } from 'mongoose';
-import { Auditable, AuditableSchema } from '../../shared/models/auditable';
+import { Auditable, AuditableSchema } from './base/auditable';
 
 /**
  * Represents a Note entity.

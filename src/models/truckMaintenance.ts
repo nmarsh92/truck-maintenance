@@ -1,5 +1,5 @@
 import { Schema, model, Types } from 'mongoose';
-import { Auditable, AuditableSchema } from '../../../shared/models/auditable';
+import { Auditable, AuditableSchema } from './base/auditable';
 import { Truck } from './truck';
 
 /**

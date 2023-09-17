@@ -1,6 +1,6 @@
-import { PRODUCTION } from "./constants/environment";
-import { ArgumentNullError } from "./errors/argument-null-error";
-import { ServerError } from "./errors/server-error";
+import { PRODUCTION } from "../constants/environment";
+import { ArgumentNullError } from "../domain/error/argument-null-error";
+import { ServerError } from "../domain/error/server-error";
 
 /**
  * Represents the configuration settings and environment variables used in a Node.js application.

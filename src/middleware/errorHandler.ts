@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
-import { HttpError } from "../errors/http-error";
-import BadRequestError from "../errors/bad-request";
+import { HttpError } from "../domain/error/http-error";
+import BadRequestError from "../domain/error/bad-request";
 /**
  * Error handling middleware for HttpErrors.
  * @param {Error} error 

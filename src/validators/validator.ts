@@ -1,6 +1,6 @@
 import { validationResult, ValidationChain } from 'express-validator';
 import { RequestHandler } from 'express';
-import BadRequestError from './errors/bad-request';
+import BadRequestError from '../domain/error/bad-request';
 
 /**
  * Validate request based on provided rules.

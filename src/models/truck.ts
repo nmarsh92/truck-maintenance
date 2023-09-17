@@ -1,6 +1,6 @@
 import { Schema, model } from 'mongoose';
-import { Auditable, AuditableSchema } from '../../../shared/models/auditable';
-import { HistorySchemaFactory, History, HistoryParent } from '../../../shared/models/history';
+import { Auditable, AuditableSchema } from './base/auditable';
+import { HistorySchemaFactory, History, HistoryParent } from '../models/base/history';
 const TRUCK_SCHEMA = 'Truck';
 const TRUCK_HISTORY_SCHEMA = 'TruckHistory';
 /**

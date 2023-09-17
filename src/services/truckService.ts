@@ -1,9 +1,9 @@
-import { ConflictError } from '../../shared/errors/conflict';
-import { NotFoundError } from '../../shared/errors/not-found';
-import { createHistory } from '../../shared/services/historyService';
-import { TruckModel, TruckHistoryModel, Truck, TruckHistory, AuditableTruck } from './models/truck';
-import { CreateTruckRequest } from './api/createTruckRequest';
-import { UpdateTruckRequest } from './api/updateTruckRequest';
+import { ConflictError } from '../domain/error/conflict';
+import { NotFoundError } from '../domain/error/not-found';
+import { createHistory } from './base/historyService';
+import { TruckModel, TruckHistoryModel, Truck, TruckHistory, AuditableTruck } from '../models/truck';
+import { CreateTruckRequest } from '../api/truck/createTruckRequest';
+import { UpdateTruckRequest } from '../api/truck/updateTruckRequest';
 
 /**
 * Creates a new truck.

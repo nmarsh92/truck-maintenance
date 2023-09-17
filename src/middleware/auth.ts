@@ -1,6 +1,6 @@
 
 import axios from "axios";
-import { UnauthorizedError } from "../errors/unauthorized";
+import { UnauthorizedError } from "../domain/error/unauthorized";
 import { NextFunction, Request, Response } from "express";
 
 export const isAuthorized = async (req: Request, res: Response, next: NextFunction) => {
