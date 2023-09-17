@@ -1,8 +1,9 @@
+import { HasId } from "./hasId";
 /**
  * Audit properties for an entity.
  * @interface
  */
-export interface Auditable {
+export interface Auditable extends HasId {
   /**
    * The creation date.
    * @type {date} 
@@ -23,4 +24,13 @@ export interface Auditable {
    * @memberof Auditable
    */
   isDeleted: boolean;
+
+  /**
+   * The version of the record.
+   * @type {number}
+   * @memberof Auditable
+   * @example
+   * 1
+   */
+  __v: number;
 }

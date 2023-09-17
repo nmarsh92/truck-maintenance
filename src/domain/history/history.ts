@@ -1,10 +1,12 @@
 import { Types } from "mongoose";
+import { Auditable } from "../auditable";
 
 /**
  * Required fields for a historic child.
  * @interface
  */
 export interface History<T> {
+
   /**
    * The ID of the parent document.
    * @type {date} 
@@ -18,12 +20,11 @@ export interface History<T> {
  * @memberof History
 */
   expiredAt: Date | number;
-
   /**
-  * When the this revision expired.
-  * @type {date} 
-  * @memberof History
-  */
+ * When the this revision expired.
+ * @type {date} 
+ * @memberof History
+ */
   createdAt: Date;
 
   /**

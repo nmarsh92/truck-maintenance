@@ -1,9 +1,8 @@
 import { Schema, model } from "mongoose";
 import { TruckHistory } from "../../domain/truck/truckHistory";
 import { HistorySchemaFactory } from "../history";
-import { TRUCK_SCHEMA } from "./truck";
+import { TRUCK_HISTORY_SCHEMA, TRUCK_SCHEMA } from "../../constants/schemas";
 
-export const TRUCK_HISTORY_SCHEMA = 'TruckHistory';
 /**
  * The truck history schema.
  * @type {Schema<TruckHistory>}

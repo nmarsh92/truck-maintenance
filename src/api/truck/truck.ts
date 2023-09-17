@@ -1,8 +1,10 @@
+import { AuditableResponse } from "../auditableResponse";
+
 /**
  * Represents a Truck entity.
  * @interface
  */
-export interface Truck {
+export interface TruckResponse extends AuditableResponse {
   /**
    * The truck's fleet.
    */

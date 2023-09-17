@@ -1,17 +1,19 @@
 import { Schema, model } from 'mongoose';
 import { AuditableSchema } from '../auditable';
 import { HistorySchemaFactory } from '../history';
-import { AuditableTruck } from '../../domain/truck/auditableTruck';
-import { TRUCK_HISTORY_SCHEMA } from './truckHistory';
+import { Auditable } from '../../domain/auditable';
+import { HistoryParent } from '../../domain/history/historyParent';
+import { Truck } from '../../domain/truck/truck';
+import { TruckHistory } from '../../domain/truck/truckHistory';
+import { TRUCK_SCHEMA, TRUCK_HISTORY_SCHEMA } from '../../constants/schemas';
 
-export const TRUCK_SCHEMA = 'Truck';
 
 
 /**
  * The truck schema.
  * @type {Schema<AuditableTruck>}
  */
-const TruckSchema = new Schema<AuditableTruck>({
+const TruckSchema = new Schema<Truck & Auditable & HistoryParent<TruckHistory>>({
   fleet: { type: String },
   driver: { type: String },
   totalMiles: { type: Number },
@@ -22,7 +24,7 @@ const TruckSchema = new Schema<AuditableTruck>({
 
 
 
-const TruckModel = model<AuditableTruck>(TRUCK_SCHEMA, TruckSchema);
+const TruckModel = model<Truck & Auditable & HistoryParent<TruckHistory>>(TRUCK_SCHEMA, TruckSchema);
 
 
 export { TruckModel }

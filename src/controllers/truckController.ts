@@ -3,7 +3,11 @@ import { ServerError } from '../domain/error/server-error';
 import { updateHandler, createHandler, deleteHandler, getHandler } from '../services/truckService';
 import { CreateTruckRequest } from '../api/truck/createTruckRequest';
 import { UpdateTruckRequest } from '../api/truck/updateTruckRequest';
-import { ResourceResponse } from '../api/base/resource';
+import { ResourceResponse } from '../api/resource';
+import { mapTo } from '../helpers/autoMapper';
+import { AuditableTruck } from '../domain/truck/auditableTruck';
+import { TruckResponse } from '../api/truck/truck';
+import { AuditableToApiMap } from '../mappings/auditable';
 
 /**
  * TruckController.
@@ -26,7 +30,11 @@ export const find = async (req: Request, res: Response, next: NextFunction): Pro
 export const get = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
     const truck = await getHandler(req.params.id);
-    res.status(200).json(truck);
+    const response = mapTo<AuditableTruck, TruckResponse>(
+      truck,
+      AuditableToApiMap
+    );
+    res.status(200).json(response);
   } catch (error) {
     next(error);
   }
@@ -42,13 +50,19 @@ export const create = async (req: Request, res: Response, next: NextFunction): P
   try {
     const request: CreateTruckRequest = req.body;
     const truck = await createHandler(request);
-    const resource = new ResourceResponse(truck.id, truck.__v, truck.createdAt)
+    const resource: ResourceResponse = { id: truck._id.toString(), version: truck.__v, createdAt: truck.createdAt }
     res.status(201).json(resource);
   } catch (error) {
     next(error);
   }
 };
 
+/**
+ * Update a truck by ID.
+ * @param req 
+ * @param res 
+ * @param next 
+ */
 export const update = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
     const request: UpdateTruckRequest = req.body;
@@ -59,6 +73,12 @@ export const update = async (req: Request, res: Response, next: NextFunction): P
   }
 };
 
+/**
+ * Delete a truck by ID.
+ * @param req 
+ * @param res 
+ * @param next 
+ */
 export const deleteOne = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
     const version: number = Number.parseInt(req.params.version);
