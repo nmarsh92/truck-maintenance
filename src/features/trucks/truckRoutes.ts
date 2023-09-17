@@ -12,8 +12,8 @@ const createRules: ValidationChain[] = [
 
 
 
-router.get("/:id", checkCsrf, get);
-router.post("/", checkCsrf, validate(createRules), create);
-router.put("/:id", checkCsrf, validate(createRules), update);
-router.get("/find", checkCsrf, find);
+router.get("/:id", get);
+router.post("/", validate(createRules), create);
+router.put("/:id", validate(createRules), update);
+router.get("/find", find);
 

@@ -19,6 +19,7 @@
     "@types/jsonwebtoken": "^9.0.2",
     "@types/jws": "^3.2.5",
     "@types/uuid": "^9.0.2",
+    "axios": "^1.4.0",
     "bcrypt": "^5.1.0",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",

@@ -1,4 +1,3 @@
-import { AuthClient } from "./authClient";
 import { PRODUCTION } from "./constants/environment";
 import { ArgumentNullError } from "./errors/argument-null-error";
 import { ServerError } from "./errors/server-error";
@@ -24,34 +23,9 @@ export class Environment {
   public readonly port: number = 80;
 
   /**
-   * Username used to connect to the MongoDB database.
-   */
-  public readonly mongoUser: string;
-
-  /**
-   * Password used to connect to the MongoDB database.
-   */
-  public readonly mongoPassword: string;
-
-  /**
    * Name of the MongoDB database to be used.
    */
   public readonly db: string;
-
-  /**
-   * Client ID for Google authentication.
-   */
-  public readonly googleClientId: string;
-
-  /**
-   * Client secret for Google authentication.
-   */
-  public readonly googleSecret: string;
-
-  /**
-   * An array of verified domains.
-   */
-  public readonly verifiedDomains: Array<string>;
 
   /**
    * An array of auth clients.
@@ -75,12 +49,7 @@ export class Environment {
   private constructor() {
     this.isProduction = process.env.NODE_ENV === PRODUCTION;
     this.port = this.isProduction ? 80 : parseInt(process.env.PORT || "8080");
-    this.mongoUser = this.getOrThrow("MONGO_USER");
-    this.mongoPassword = this.getOrThrow("MONGO_PASSWORD");
     this.db = this.getOrThrow("DB");
-    this.googleClientId = this.getOrThrow("GOOGLE_CLIENT_ID");
-    this.googleSecret = this.getOrThrow("GOOGLE_CLIENT_SECRET");
-    this.verifiedDomains = this.getOrThrow("VERIFIED_DOMAINS").split(",");
     const clientsString = this.getOrThrow("CLIENTS");
     clientsString.split(",").forEach(clientStr => {
       const clientPair = clientStr.split(":");

@@ -6,13 +6,12 @@ import helmet from "helmet";
 import cors from "cors";
 import { errorHandler } from './src/shared/middleware/errorHandler';
 import { router as truckRoutes, name as truckName } from "./src/features/trucks/truckRoutes";
-import { router as authRoutes, name as authName } from "./src/features/authorization/authRoutes"
 import { connect } from './src/shared/database/mongoose';
 import cookieParser from "cookie-parser";
 import { UseRoutes } from './src/shared/helpers/routes';
 import { Environment } from './src/shared/environment';
+import { isAuthorized } from './src/shared/middleware/auth';
 dotenv.config();
-console.log
 const app: Express = express();
 const port = process.env.PORT;
 const swaggerOptions = {
@@ -35,8 +34,8 @@ app.use(cookieParser());
 
 if (!Environment.getInstance().isProduction)
   app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, { explorer: true }));
+app.use(isAuthorized);
 UseRoutes(app, truckName, truckRoutes);
-UseRoutes(app, authName, authRoutes);
 
 
 app.use(errorHandler);
